@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="79dp"
         android:gravity="top|center"
-        android:background="@color/white"
         android:textSize="25dp" />
 
 </LinearLayout>

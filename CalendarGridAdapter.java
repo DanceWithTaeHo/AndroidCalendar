@@ -1,23 +1,25 @@
-package com.example.monthviewactivity;
+package com.example.androidcalendarproject2;
 
 import android.content.Context;
-import android.provider.CalendarContract;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Vector;
 
-public class CalendarGridAdapter extends BaseAdapter { // 캘 린더그리드 어뎁터 정의
-    private Context context;
+import java.util.ArrayList;
+
+public class CalendarGridAdapter extends BaseAdapter { // 캘린더그리드 어뎁터 정의
+    private View calendarView;
     private int resource;
     private ArrayList<DayItem> dayItems;
+    private ArrayList<TextView> dayTextViews = new ArrayList<TextView>();
+    private TextView dayTv;
 
-    public CalendarGridAdapter(Context context, int resource, ArrayList<DayItem> dayItems){
-        this.context = context;
+    public CalendarGridAdapter(View calendarView, int resource, ArrayList<DayItem> dayItems){
+        this.calendarView = calendarView;
         this.resource = resource;
         this.dayItems = dayItems;
     }
@@ -37,16 +39,25 @@ public class CalendarGridAdapter extends BaseAdapter { // 캘 린더그리드 �
         return position;
     }
 
+    public void setBackgroundColor(int position){
+        for (int i=0; i<dayTextViews.size(); i++){
+            dayTextViews.get(i).setBackgroundColor(Color.WHITE);
+        }
+        dayTextViews.get(position+1).setBackgroundColor(Color.CYAN);
+
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) { // 이전에 생성된 적이 없을 때
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            // xml 리소스로부터 뷰 객체를 로드
-            convertView = inflater.inflate(resource, parent, false);
+        if (convertView == null) { // 해당 항목 뷰가 이전에 생성된 적이 없는 경우
+            LayoutInflater inflater = (LayoutInflater) calendarView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            // 항목 뷰를 정의한 xml 리소스(여기서는 mResource 값)으로부터 항목 뷰 객체를 메모리로 로드
+            convertView = inflater.inflate(resource, parent,false);
         }
-        TextView dayTv = convertView.findViewById(R.id.day);
+        dayTv = convertView.findViewById(R.id.day);
         dayTv.setText(dayItems.get(position).getDay()); // 해당 요일을 TextView에 설정
-
+        dayTextViews.add(dayTv);
         return convertView;
     }
+
 }

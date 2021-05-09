@@ -1,4 +1,6 @@
-package com.example.monthviewactivity;
+package com.example.androidcalendarproject2;
+
+import android.widget.TextView;
 
 public class DayItem { // 캘린더 그리드의 아이템
     private String year, month, day; // 년, 월, 일
