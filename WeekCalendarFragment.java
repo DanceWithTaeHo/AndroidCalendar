@@ -19,6 +19,7 @@ import java.util.Calendar;
 
 public class WeekCalendarFragment extends Fragment {
     Calendar calendar = Calendar.getInstance();
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_PARAM3 = "param3";
@@ -70,8 +71,9 @@ public class WeekCalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View calendarView = inflater.inflate(R.layout.fragment_month_calendar, container, false);
         setCalendar(); // 캘린더 설정, 날짜에 맞게 dayItem 삽입
-        calendarGridAdapter = new CalendarGridAdapter(calendarView, R.layout.day, dayItems); // 그리드 어뎁터
         calendarGrid = (GridView) calendarView.findViewById(R.id.calendar_grid); // 캘린더 그리드 뷰
+        int width = 0, height = 0;
+        calendarGridAdapter = new CalendarGridAdapter(calendarView, R.layout.day, dayItems, width, height); // 그리드 어뎁터
         calendarGrid.setAdapter(calendarGridAdapter); // 어뎁터 설정
         // 이벤트 리스너 설정, 아래에 내부클래스로 정의
         calendarGrid.setOnItemClickListener(new WeekCalendarFragment.GridClickListener());

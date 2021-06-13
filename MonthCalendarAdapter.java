@@ -3,6 +3,7 @@ package com.example.androidcalendarproject2;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -19,6 +20,7 @@ public class MonthCalendarAdapter extends FragmentStateAdapter {
     private int year, month, day, thisYear, thisMonth, today; // 년, 월, 일
     private Calendar calendar = Calendar.getInstance(); // 캘린더 객체
     private ViewPager2 viewPager2;
+    private AppCompatActivity mainActivity;
 
 
     public MonthCalendarAdapter(@NonNull Fragment fragment, ViewPager2 viewPager2) {
@@ -35,7 +37,7 @@ public class MonthCalendarAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         setDate(position);
-        calendarFragment = MonthCalendarFragment.newInstance(year, month, day);
+        calendarFragment = MonthCalendarFragment.newInstance(year, month, day, viewPager2.getWidth(),viewPager2.getHeight());
         calendarFragmentHashMap.put(position, calendarFragment);
         return calendarFragment;
     }

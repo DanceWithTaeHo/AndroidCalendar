@@ -1,28 +1,26 @@
 package com.example.androidcalendarproject2;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 
 import java.util.Calendar;
 
 public class MonthViewFragment extends Fragment {
+    private MonthCalendarAdapter adapter;
     Calendar calendar = Calendar.getInstance();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
 
-    private  AppCompatActivity mainActivity;
+    private AppCompatActivity mainActivity;
 
     public MonthViewFragment() {}
     public MonthViewFragment(AppCompatActivity mainActivity) {
@@ -45,6 +43,7 @@ public class MonthViewFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -53,7 +52,8 @@ public class MonthViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_month_view, container, false);
 
         ViewPager2 vpPager = rootView.findViewById(R.id.vpPager);
-        MonthCalendarAdapter adapter = new MonthCalendarAdapter(this, vpPager);
+        adapter = new MonthCalendarAdapter(this, vpPager);
+
         vpPager.setAdapter(adapter);
 
         vpPager.setCurrentItem(adapter.STARTPOSITION, false); // 시작 페이지 설정

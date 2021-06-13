@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class CalendarGridAdapter extends BaseAdapter { // 캘린더그리드 어뎁터 정의
@@ -17,11 +19,14 @@ public class CalendarGridAdapter extends BaseAdapter { // 캘린더그리드 어
     private ArrayList<DayItem> dayItems;
     private ArrayList<TextView> dayTextViews = new ArrayList<TextView>();
     private TextView dayTv;
+    private int height, width;
 
-    public CalendarGridAdapter(View calendarView, int resource, ArrayList<DayItem> dayItems){
+    public CalendarGridAdapter(View calendarView, int resource, ArrayList<DayItem> dayItems, int width, int height){
         this.calendarView = calendarView;
         this.resource = resource;
         this.dayItems = dayItems;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -54,7 +59,12 @@ public class CalendarGridAdapter extends BaseAdapter { // 캘린더그리드 어
             // 항목 뷰를 정의한 xml 리소스(여기서는 mResource 값)으로부터 항목 뷰 객체를 메모리로 로드
             convertView = inflater.inflate(resource, parent,false);
         }
+        int textViewHeight = height/6;
+        int textViewWidth = width/7;
         dayTv = convertView.findViewById(R.id.day);
+        dayTv.setLayoutParams(new LinearLayout.LayoutParams(textViewWidth, textViewHeight));
+
+
         dayTv.setText(dayItems.get(position).getDay()); // 해당 요일을 TextView에 설정
         dayTextViews.add(dayTv);
         return convertView;

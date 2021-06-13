@@ -1,8 +1,10 @@
 package com.example.androidcalendarproject2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -15,6 +17,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -22,27 +26,32 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class MonthCalendarFragment extends Fragment {
-    private int year, month, day; // 년, 월, 일
+    private int year, month, day, height, width, dayPosition; // 년, 월, 일, 뷰페이저 높이
     private Calendar calendar = Calendar.getInstance(); // 캘린더 객체
 
     private ArrayList<DayItem> dayItems; // 그리드 아이템 리스트
     private GridView calendarGrid; // 캘린더 그리드
     private CalendarGridAdapter calendarGridAdapter; // 캘린더 그리드 객체 어뎁터
+    private FloatingActionButton addScheduleBtn;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String ARG_PARAM3 = "param3";
+    private static final String ARG_PARAM4 = "param4";
+    private static final String ARG_PARAM5 = "param5";
 
     public MonthCalendarFragment() {
         dayItems = new ArrayList<DayItem>(); // 그리드 아이템
     }
 
-    public static MonthCalendarFragment newInstance(int year, int month, int day) {
+    public static MonthCalendarFragment newInstance(int year, int month, int day, int width, int height) {
         MonthCalendarFragment fragment = new MonthCalendarFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, year);
         args.putInt(ARG_PARAM2, month);
         args.putInt(ARG_PARAM3, day);
+        args.putInt(ARG_PARAM4, width);
+        args.putInt(ARG_PARAM5, height);
         fragment.setArguments(args);
 
         return fragment;
@@ -55,6 +64,8 @@ public class MonthCalendarFragment extends Fragment {
             year = getArguments().getInt(ARG_PARAM1);
             month = getArguments().getInt(ARG_PARAM2);
             day = getArguments().getInt(ARG_PARAM3);
+            width = getArguments().getInt(ARG_PARAM4);
+            height = getArguments().getInt(ARG_PARAM5);
         }
     }
 
@@ -63,11 +74,14 @@ public class MonthCalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View calendarView = inflater.inflate(R.layout.fragment_month_calendar, container, false);
         setCalendar(); // 캘린더 설정, 날짜에 맞게 dayItem 삽입
-        calendarGridAdapter = new CalendarGridAdapter(calendarView, R.layout.day, dayItems); // 그리드 어뎁터
         calendarGrid = (GridView) calendarView.findViewById(R.id.calendar_grid); // 캘린더 그리드 뷰
+        addScheduleBtn = (FloatingActionButton) this.getActivity().findViewById(R.id.add_schedule_btn);
+        calendarGridAdapter = new CalendarGridAdapter(calendarView, R.layout.day, dayItems, width, height); // 그리드 어뎁터
         calendarGrid.setAdapter(calendarGridAdapter); // 어뎁터 설정
+
         // 이벤트 리스너 설정, 아래에 내부클래스로 정의
         calendarGrid.setOnItemClickListener(new GridClickListener());
+        addScheduleBtn.setOnClickListener(new addScheduleListener());
         return calendarView;
     }
     private void setCalendar(){ // 캘린더 객체를 통해 날짜를 셋팅
@@ -93,23 +107,34 @@ public class MonthCalendarFragment extends Fragment {
         for(int i=0; i<boxs; i++)
             dayItems.add(new DayItem(Integer.toString(year), Integer.toString(month+1), ""));
     }
-
-    /* 아이템 클릭 리스너를 구현해 Toast 메시지를 생성하는 이벤트 리스너*/
-    class GridClickListener implements AdapterView.OnItemClickListener { // 토스트 메시지 이벤트 리스너
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            // calendarGridAdapter로부터 선택된 Item을 가져와 현재 context에 dayItem 날짜 정보를 출력
-            DayItem dayItem = (DayItem)calendarGridAdapter.getItem(position);
-            calendarGridAdapter.setBackgroundColor(position);
-            Toast.makeText(calendarGrid.getContext(), dayItem.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
     public int getMonth() {
         return month;
     }
 
     public int getYear() {
         return year;
+    }
+
+    class addScheduleListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getActivity().getApplicationContext(), ScheduleActivity.class);
+            intent.putExtra("month", month);
+            intent.putExtra("year", year);
+            startActivity(intent);
+        }
+    }
+
+
+
+
+    /* 아이템 클릭 리스너를 구현해 Toast 메시지를 생성하는 이벤트 리스너*/
+    class GridClickListener implements AdapterView.OnItemClickListener { // 토스트 메시지 이벤트 리스너
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            dayPosition = position;
+            // calendarGridAdapter로부터 선택된 Item을 가져와 현재 context에 dayItem 날짜 정보를 출력
+            calendarGridAdapter.setBackgroundColor(position);
+        }
     }
 }
